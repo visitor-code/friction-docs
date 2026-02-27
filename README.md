@@ -1,5 +1,7 @@
 # Documentation
 
+<figure><img src=".gitbook/assets/friction-icon.png" alt="Friction" width="80"></figure>
+
 Complete documentation for Friction's crypto index perpetuals on Hyperliquid. Learn about our index methodology, oracle infrastructure, and how to trade.
 
 ## Index Methodology
