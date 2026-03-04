@@ -1,22 +1,20 @@
-# Fee Structure
+# Fees
 
-Friction index perpetuals use Hyperliquid's HIP-3 fee structure. Fees are slightly higher than standard Hyperliquid markets (2x multiplier) to compensate for the custom oracle infrastructure.
+Friction markets use Hyperliquid's HIP-3 fee structure. Fees are slightly higher than standard Hyperliquid markets because they include the cost of oracle infrastructure and index methodology.
 
 ## Trading Fees
 
-| Fee Type | Rate | Notes |
-|----------|------|-------|
-| Taker Fee | 9 bps (0.09%) | Standard Hyperliquid taker x 2x HIP-3 multiplier |
-| Maker Fee | 3 bps (0.03%) | Standard Hyperliquid maker x 2x HIP-3 multiplier |
-| Funding Rate | Variable | Standard Hyperliquid 1-hour funding |
+| Fee Type | Rate | Basis Points |
+|----------|------|-------------|
+| **Taker** | 0.09% | 9 bps |
+| **Maker** | 0.03% | 3 bps |
+| **Blended** | ~0.066% | ~6.6 bps |
 
-### Blended Fee Rate
+Blended rate assumes a typical 60/40 taker/maker mix: (9 × 0.60) + (3 × 0.40) = 6.6 bps.
 
-Assuming a typical 60/40 taker/maker mix:
-
-```
-Blended = (9 x 0.60) + (3 x 0.40) = 6.6 bps per trade
-```
+{% hint style="info" %}
+HIP-3 markets charge **2x standard Hyperliquid fees** (standard: 4.5 bps taker / 1.5 bps maker). The premium funds the oracle infrastructure that makes index perpetuals possible.
+{% endhint %}
 
 ## Fee Distribution
 
@@ -25,25 +23,43 @@ Blended = (9 x 0.60) + (3 x 0.40) = 6.6 bps per trade
 | Friction (oracle provider) | 50% |
 | Hyperliquid validators | 50% |
 
-## Fee Comparison
+## Comparison
 
 | Platform | Taker | Maker |
 |----------|-------|-------|
-| Friction (HIP-3) | 9 bps | 3 bps |
+| **Friction (HIP-3)** | 9 bps | 3 bps |
 | Hyperliquid (standard) | 4.5 bps | 1.5 bps |
 | dYdX | 5 bps | 2 bps |
 | Binance Futures | 5 bps | 2 bps |
-| CME Bitcoin Futures | ~5-6 bps | ~2-3 bps |
-
-While HIP-3 fees are higher than standard Hyperliquid markets, they are competitive with other exchanges. The premium reflects the cost of maintaining institutional-grade index methodology and real-time oracle infrastructure.
 
 ## Growth Mode
 
-Hyperliquid's HIP-3 protocol supports a "growth mode" that can reduce fees by up to 90% for selected markets. Friction may activate growth mode during the early launch phase to drive volume and attract traders.
+Friction may activate Hyperliquid's **growth mode** on select markets during early launch phases. Growth mode reduces fees by up to 90%, making Friction markets temporarily cheaper than standard Hyperliquid perps.
+
+When active, fees drop to approximately:
+
+| Fee Type | Growth Mode Rate |
+|----------|-----------------|
+| Taker | ~0.9 bps |
+| Maker | ~0.3 bps |
+
+Growth mode availability is rate-limited by Hyperliquid and will be announced when active.
 
 ## No Hidden Fees
 
-- No deposit or withdrawal fees (handled by Hyperliquid)
-- No account maintenance fees
-- No additional oracle fees
-- Funding rates are the standard Hyperliquid mechanism
+| Item | Fee |
+|------|-----|
+| Deposits | None (Hyperliquid handles) |
+| Withdrawals | None (Hyperliquid handles) |
+| Account maintenance | None |
+| Oracle | Included in trading fee |
+| Funding rates | Standard Hyperliquid mechanism (variable, 1-hour intervals) |
+
+## Fee Examples
+
+| Trade | Size | Side | Fee |
+|-------|------|------|-----|
+| Market buy TCAP | $10,000 | Taker | $9.00 (9 bps) |
+| Limit buy TCAP | $10,000 | Maker | $3.00 (3 bps) |
+| Market sell MEME | $5,000 | Taker | $4.50 (9 bps) |
+| Limit sell BTC.D | $50,000 | Maker | $15.00 (3 bps) |

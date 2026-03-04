@@ -1,54 +1,99 @@
 # Oracle Architecture
 
-Friction operates a proprietary oracle service that calculates index prices and publishes them to Hyperliquid via the HIP-3 protocol. The oracle is designed for maximum reliability and manipulation resistance.
+Friction's oracle fetches prices from multiple independent sources, validates and aggregates them, and publishes to Hyperliquid every 3 seconds via the HIP-3 `setOracle` API.
 
 ## Design Principles
 
-1. **Never halt** — Always publish, even at degraded confidence
-2. **Never jump** — Price changes must be smooth and continuous
-3. **Never trust a single source** — Cross-validate all inputs
-4. **Always log** — Full audit trail for every pricing decision
+Five rules govern all oracle code:
 
-## Pipeline Overview
+| # | Rule | Meaning |
+|---|------|---------|
+| 1 | **Never halt** | Always publish, even at degraded confidence (floor: 40%) |
+| 2 | **Never jump** | Price changes must be smooth — simulate failed sources rather than switching abruptly |
+| 3 | **Never trust** | Validate all inputs, bound all outputs, cross-validate across sources |
+| 4 | **Always log** | Every pricing decision logged with full context for audit |
+| 5 | **Always test** | 48-hour simulation minimum before any production deploy |
+
+## Pipeline
 
 ```
-Data Sources -> Aggregation -> Validation -> Publishing -> Hyperliquid
-     |              |            |             |
-  Fetch from    Median +     Confidence    setOracle()
-  multiple      outlier      scoring &     via HIP-3
-  sources       filtering    bounds check  API
+Data Sources → Aggregation → Confidence Scoring → HIP-3 Publishing
 ```
 
-## Aggregation
+### 1. Data Fetching
 
-The oracle fetches market data from multiple independent institutional-grade sources simultaneously. Each source is independently validated and scored:
+All sources are fetched in parallel every 3 seconds. Each source returns a market cap or price with a timestamp.
 
-- **Median filtering:** Takes the median of all available prices, inherently resistant to single-source manipulation
-- **Outlier detection:** Sources deviating significantly from the median are flagged and potentially excluded
-- **Cross-validation:** Independent source agreement is measured — high agreement increases confidence
+### 2. Hybrid Blending (TCAP)
 
-## Confidence Scoring
+TCAP uses a hybrid CEX+DEX architecture:
 
-Every oracle update carries a confidence score based on:
+- **CEX layer** (CoinGecko + CoinMarketCap): Provides the "level" — total market cap from 13,000+ assets
+- **Hyperliquid layer** (25 spot pairs): Provides the "movement" — tick-by-tick price changes from deeply liquid markets covering ~85% of total market cap
 
-- Number of available sources (more is better)
-- Agreement between sources (tighter spread = higher confidence)
-- Data freshness (stale data reduces confidence)
-- Historical consistency (sudden deviations reduce confidence)
+The blend weight shifts based on how fresh the CEX data is:
 
-## Publishing
+| CEX Data Age | CEX Weight | HL Weight | Rationale |
+|-------------|-----------|-----------|-----------|
+| < 15 seconds | 60% | 40% | CEX just refreshed, high confidence |
+| 15–30 seconds | 40% | 60% | CEX aging, HL tracks movement better |
+| 30–45 seconds | 20% | 80% | CEX stale, HL dominates |
+| > 45 seconds | 5% | 95% | CEX very stale, HL near-solo (5% anchor prevents drift) |
 
-Oracle prices are published to Hyperliquid in real time via the HIP-3 deployer API. Hyperliquid uses these prices for:
+### 3. Deviation Guard
 
-- Mark price calculation
-- Funding rate computation
-- Liquidation thresholds
+If the Hyperliquid estimate diverges from CEX by more than 2%, the oracle forces at least 70% CEX weight to prevent manipulation:
 
-## Monitoring
+```
+if |HL_estimate - CEX_price| / CEX_price > 2%:
+    CEX weight = max(current_weight, 70%)
+```
 
-The oracle runs with comprehensive monitoring and alerting:
+### 4. Confidence Scoring
 
-- Health checks every few seconds
-- Automatic alerts on source failures
-- Deviation monitoring between sources
-- Full audit logs for regulatory compliance
+Every oracle update carries a confidence score (0.40 – 0.95):
+
+| Factor | Effect |
+|--------|--------|
+| Source agreement (CG vs CMC) | Deviation < 2% = 0.95, > 6% = 0.60 |
+| Staleness | Fresh (< 30s) = 1.0x, Critical (45-60s) = 0.7x, Halt (> 60s) = 0.0x |
+| Failover level | L0 = 0.95, L1 = 0.90 → 0.40, L2 = 0.55, L3/L4 = 0.40 |
+
+```
+Final confidence = base × failover_multiplier × staleness_multiplier
+```
+
+### 5. HIP-3 Publishing
+
+Every 3 seconds, the oracle calls Hyperliquid's `setOracle` with:
+
+| Field | Value | Purpose |
+|-------|-------|---------|
+| `oraclePxs` | Blended price | Used for funding rate and settlement |
+| `markPxs` | Same as oracle | Anchors mark price (HIP-3 clamps at 1% per update) |
+| `externalPerpPxs` | EMA of recent marks | Slow-moving deviation guard |
+
+All markets are batched into a single `setOracle` call.
+
+## Sanity Checks
+
+| Check | Threshold | Action |
+|-------|-----------|--------|
+| Min total market cap | $100 billion | Reject if below |
+| Max total market cap | $50 trillion | Reject if above |
+| Max daily price range | 10x | HIP-3 enforced |
+| Max per-update change | 0.5% (TCAP) / 2% (MEME) | Self-imposed clamp |
+| Deviation > 50% from previous | — | Manual review required |
+
+## Manipulation Resistance
+
+The hybrid architecture makes manipulation extremely difficult:
+
+- **BTC + ETH = ~52% of HL basket weight** — moving them requires enormous capital
+- **2% deviation guard** forces CEX dominance if HL diverges
+- **Even at max HL weight (95%)**, an attacker must move 25 deeply liquid assets simultaneously
+- **Hyperliquid's own 1% per-update clamp** provides defense-in-depth beyond the oracle's guards
+
+{% hint style="info" %}
+Example: Moving SEI by 50% (0.3% of basket weight) at max HL weight (95%) moves the blend by just 0.14%.
+{% endhint %}

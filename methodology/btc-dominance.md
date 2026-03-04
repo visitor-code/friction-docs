@@ -1,47 +1,63 @@
-# BTC.D Index Methodology
+# BTC.D Index
 
-BTC.D tracks Bitcoin's percentage share of the total cryptocurrency market capitalization. It provides a way to trade the relative strength of Bitcoin vs. the rest of the crypto market.
+BTC.D tracks Bitcoin's share of total cryptocurrency market cap, expressed as a percentage.
 
 ## Formula
 
 ```
-BTC.D Price = (BTC Market Cap / Total Crypto Market Cap) x 100
+BTC.D = (BTC Market Cap / Total Crypto Market Cap) × 100
 ```
 
-When Bitcoin represents 57% of the total crypto market cap, BTC.D = $57.00.
+The price of BTC.D-USDC is the dominance percentage itself. If Bitcoin dominance is 56.5%, the perpetual trades at $56.50.
 
 | BTC Dominance | BTC.D Price |
-|---------------|-------------|
-| 45% | $45.00 |
+|--------------|-------------|
+| 40% | $40.00 |
 | 50% | $50.00 |
-| 55% | $55.00 |
+| 56.5% (current) | $56.50 |
 | 60% | $60.00 |
-| 65% | $65.00 |
+| 70% | $70.00 |
 
-## Data Sources
+## Why BTC.D?
 
-BTC.D is derived from the same data sources used for the TCAP index:
+Bitcoin dominance is one of the most-watched metrics in crypto. It captures a fundamental market dynamic:
 
-- BTC market cap from multiple institutional data providers
-- Total market cap from TCAP methodology (consistent denominator)
-- Cross-validated across independent sources
+| BTC.D Direction | What It Signals | Market Regime |
+|----------------|-----------------|---------------|
+| **Rising** (40 → 60) | Capital flowing into BTC, out of alts | Risk-off, "flight to quality" |
+| **Falling** (60 → 40) | Capital rotating into altcoins | Risk-on, "altcoin season" |
 
 ## Trading Use Cases
 
-### Long BTC.D (Bullish Bitcoin Dominance)
+- **Altcoin holders:** Long BTC.D to hedge against rotation back to Bitcoin
+- **BTC maximalists:** Long BTC.D as a conviction trade
+- **Market neutral:** Pair BTC.D with TCAP to isolate rotation vs growth
+- **Macro traders:** Express a view on crypto market structure without picking individual tokens
 
-- Expect Bitcoin to outperform altcoins
-- Risk-off rotation — capital flowing from alts to BTC
-- Regulatory uncertainty benefiting Bitcoin's "safe haven" status
-- Hedge against an altcoin-heavy portfolio
+## Data Sources
 
-### Short BTC.D (Bearish Bitcoin Dominance)
+BTC.D reuses the same infrastructure as TCAP — no additional data sources required.
 
-- Expect altcoins to outperform Bitcoin
-- "Alt season" — risk-on rotation into smaller tokens
-- New narratives (DeFi, AI, memes) driving altcoin flows
-- Hedge a Bitcoin-heavy portfolio
+| Source | Data Used |
+|--------|-----------|
+| **CoinGecko** | BTC market cap + total market cap |
+| **CoinMarketCap** | BTC market cap + total market cap |
 
-## Historical Range
+The oracle takes the median BTC market cap and median total market cap from available sources, then divides:
 
-BTC dominance has historically ranged from ~35% (2018 alt season) to ~70% (2021 BTC dominance recovery). It provides a clean macro signal about crypto capital allocation trends.
+```
+medianBtcMcap = median(CG_btcMcap, CMC_btcMcap)
+medianTotalMcap = median(CG_totalMcap, CMC_totalMcap)
+BTC.D = (medianBtcMcap / medianTotalMcap) × 100
+```
+
+## Market Specifications
+
+| Parameter | Value |
+|-----------|-------|
+| Ticker | BTC.D-USDC |
+| Leverage | Up to 20x |
+| Fees | 9 bps taker / 3 bps maker |
+| Funding | Standard Hyperliquid (1-hour) |
+| Oracle update | Every 3 seconds |
+| Collateral | USDC |

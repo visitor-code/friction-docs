@@ -1,74 +1,119 @@
-# MEME Index Methodology
+# MEME Index
 
-MEME tracks the top 50-100 memecoins by market capitalization, providing exposure to the memecoin ecosystem through a single tradeable index.
+MEME tracks the top 50–100 memecoins by market cap, giving diversified exposure to the memecoin ecosystem through a single tradeable index.
 
 ## Formula
 
 ```
-MEME Price = Meme Ecosystem Market Cap / 10,000,000,000
+MEME Price = Weighted Sum(token_mcap × weight) / 10,000,000,000
 ```
 
-Uses the same 10 billion universal divisor as TCAP. When the tracked memecoin ecosystem market cap is $765 million, MEME = $0.077.
+The same 10 billion divisor used across all Friction indices. Sub-dollar pricing creates a natural "upside potential" feel.
 
-## Inclusion Criteria
+| Meme Ecosystem Cap | MEME Price |
+|-------------------|------------|
+| $500 million | $0.05 |
+| $5 billion | $0.50 |
+| $10 billion | $1.00 |
+| $50 billion | $5.00 |
+| $100 billion | $10.00 |
 
-Tokens must meet all of the following criteria to be included:
+## Token Selection
 
-| Criterion | Entry Threshold | Exit Threshold |
-|-----------|-----------------|----------------|
-| Classification | Must be classified as a memecoin by major data providers | — |
-| Market Cap | $10M+ | $8M (80% hysteresis) |
-| Liquidity | $500K+ on-chain | $400K |
-| Token Age | 7+ days since creation | — |
-| DEX Availability | Available on major decentralized exchanges | — |
+### Inclusion Criteria
 
-Hysteresis thresholds (exit lower than entry) prevent tokens from rapidly entering and exiting the index near the boundary.
+| Criteria | Threshold |
+|----------|-----------|
+| Market cap | $10M+ to enter, $8M to exit |
+| Liquidity | $500K+ to enter, $400K to exit |
+| Age | 7+ days since creation |
+| Classification | Listed in CoinGecko `meme-token` category or CoinMarketCap `memes` tag |
 
-## Exclusions
+{% hint style="info" %}
+**Hysteresis prevents churn.** Entry thresholds are 25% higher than exit thresholds so tokens don't constantly flip in and out of the index.
+{% endhint %}
 
-- Stablecoins
-- Wrapped tokens
-- Tokens flagged as rugged or fraudulent
+### What's Included
+
+MEME covers memecoins across all chains — not just Solana:
+
+- **Established memes:** DOGE, SHIB, PEPE, WIF, BONK, FLOKI
+- **Pump.fun graduates:** Tokens that passed Raydium migration on Solana
+- **Cross-chain memes:** Tokens on Ethereum, Base, BNB Chain
+
+### What's Excluded
+
+- Stablecoins and wrapped tokens
+- Tokens below exit thresholds
+- Rugged tokens (detected by 80%+ liquidity drop in 1 hour)
 
 ## Weighting
 
-MEME uses a hybrid market cap + liquidity weighting methodology:
+Weights are based on market cap with caps to prevent concentration:
 
-- Base weight derived from market capitalization
-- Liquidity adjustment factor (0.5x to 1.5x) rewards tokens with deep on-chain liquidity
-- Volume quality score contributes to the combined weight
+| Cap | Value | Purpose |
+|-----|-------|---------|
+| Single token max | 15% | No single coin dominates |
+| Top 5 combined max | 50% | Ensures diversification |
+| Minimum weight | 0.1% | Excludes dust positions |
 
-### Weight Caps
+### Weight Calculation
 
-| Cap Type | Limit |
-|----------|-------|
-| Single Token Maximum | 15% |
-| Top 5 Combined Maximum | 50% |
-| Minimum Weight | 0.1% |
+1. Calculate raw weight from market cap: `token_mcap / total_ecosystem_mcap`
+2. Cap individual tokens at 15%
+3. If top 5 exceed 50% combined, scale them down proportionally
+4. Remove tokens below 0.1% minimum
+5. Normalize all weights to sum to 1
 
 ## Rebalancing
 
-The index is rebalanced **daily at 00:00 UTC**:
+### Daily (00:00 UTC)
 
-1. Fetch all tokens meeting the memecoin classification
-2. Apply inclusion criteria filters
-3. Calculate new weights with caps applied
-4. Compare to previous composition — log additions, removals, and weight changes
-5. Update oracle service with new composition
+1. Fetch all qualifying tokens from CoinGecko and CoinMarketCap
+2. Apply inclusion criteria (new tokens must meet entry thresholds)
+3. Calculate and cap weights
+4. Update composition
+5. Log all additions, removals, and weight changes
 
-## Emergency Removal
+### Emergency (Rug Detection)
 
-Tokens may be removed outside the daily rebalance window under emergency conditions:
+If a token's liquidity drops more than 80% within 1 hour:
 
-- **Rug detection:** If liquidity drops more than 80% within one hour, the token is immediately removed
-- Removed weight is redistributed proportionally among remaining constituents
-- Emergency removals are logged and reported
+1. Immediately remove from index
+2. Redistribute weight proportionally to remaining tokens
+3. Critical alert sent to team
+4. Token must re-qualify from scratch to re-enter
 
 ## Data Sources
 
-MEME prices are sourced primarily from decentralized exchanges where memecoins trade:
+| Source | Weight | Role |
+|--------|--------|------|
+| **Hyperliquid spot** | Primary | HL-listed meme prices |
+| **Jupiter** | Primary | Solana DEX aggregator |
+| **Uniswap V3** | Primary | Ethereum DEX |
+| **Binance** | Validation | CEX cross-check |
+| **Coinbase** | Validation | CEX cross-check |
+| **CoinGecko** | Fallback | Reference pricing |
 
-- Multiple Solana DEX aggregators for price discovery
-- On-chain liquidity depth verification
-- Cross-validation against centralized exchange listings where available
-- Manipulation-resistant median filtering across sources
+Per-token price aggregation:
+- Collect prices from all available sources
+- Apply median filter
+- Remove outliers (> 5% from median — wider than TCAP's 2% due to meme volatility)
+- Weighted average of remaining sources
+
+### Cold Start Fallback
+
+If all APIs and caches are unavailable, the oracle falls back to 10 hardcoded top memecoins (DOGE, SHIB, PEPE, WIF, BONK, FLOKI, BRETT, POPCAT, MEW, NEIRO) and fetches live prices from exchanges. This is an emergency measure at very low confidence (30%).
+
+## Market Specifications
+
+| Parameter | Value |
+|-----------|-------|
+| Ticker | MEME-USDC |
+| Leverage | Up to 10x (higher volatility) |
+| Fees | 9 bps taker / 3 bps maker |
+| Funding | Standard Hyperliquid (1-hour) |
+| Oracle update | Every 2.5 seconds |
+| Outlier threshold | 5% (vs 2% for TCAP) |
+| Max price change per update | 2% (vs 0.5% for TCAP) |
+| Collateral | USDC |

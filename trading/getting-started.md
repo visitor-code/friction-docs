@@ -1,56 +1,83 @@
 # Getting Started
 
-Friction index perpetuals trade directly on Hyperliquid. No additional accounts, wallets, or sign-ups are needed — use your existing Hyperliquid account.
+Friction index perpetuals trade directly on Hyperliquid. No separate sign-up required.
 
 ## Prerequisites
 
-1. **Hyperliquid account** — Visit [app.hyperliquid.xyz](https://app.hyperliquid.xyz) and connect your wallet
-2. **USDC on Hyperliquid** — Bridge USDC from Arbitrum to Hyperliquid L1
-3. That's it.
+- A Hyperliquid account ([app.hyperliquid.xyz](https://app.hyperliquid.xyz))
+- USDC balance on Hyperliquid (deposit via Arbitrum bridge or direct transfer)
+- Any wallet supported by Hyperliquid (MetaMask, Rabby, WalletConnect, etc.)
 
-## Step-by-Step
+## Step 1: Connect to Hyperliquid
 
-### 1. Find Friction Markets
+Go to [app.hyperliquid.xyz](https://app.hyperliquid.xyz) and connect your wallet. If you don't have an account, the first connection creates one.
 
-On Hyperliquid's trading interface, search for:
+## Step 2: Fund Your Account
 
-- **TCAP-USDC** — Total crypto market cap index
-- **BTC.D-USDC** — Bitcoin dominance index (coming soon)
-- **MEME-USDC** — Top 100 memecoin index (coming soon)
+Deposit USDC to your Hyperliquid account. The most common method is bridging USDC from Arbitrum. Hyperliquid also supports direct deposits from other chains.
 
-### 2. Place Your Trade
+## Step 3: Find a Friction Market
 
-Friction markets work exactly like any other Hyperliquid perpetual:
+Search for the market you want to trade:
 
-- Choose **Long** (bullish) or **Short** (bearish)
-- Set your position size in USDC
-- Select leverage (up to 20x for TCAP and BTC.D, up to 10x for MEME)
-- Use Market or Limit order type
-- Confirm the trade
+| Ticker | What It Is |
+|--------|-----------|
+| **TCAP-USDC** | Total crypto market cap index |
+| **BTC.D-USDC** | Bitcoin dominance index |
+| **MEME-USDC** | Top memecoins index |
 
-### 3. Manage Your Position
+## Step 4: Place a Trade
 
-All position management features are native Hyperliquid:
+Friction markets work like any other Hyperliquid perpetual:
 
-- Real-time P&L tracking
-- Stop-loss and take-profit orders
-- Adjust leverage on open positions
-- Partial close capabilities
+1. **Select your side** — Long (market goes up) or Short (market goes down)
+2. **Set your size** — How much USDC notional exposure
+3. **Choose leverage** — Up to 20x for TCAP and BTC.D, up to 10x for MEME
+4. **Pick your order type:**
+   - **Market** — Execute immediately at current price
+   - **Limit** — Execute at your specified price or better
+   - **Stop-Loss** — Close position if price moves against you
+   - **Take-Profit** — Close position at your target price
+   - **Trailing Stop** — Dynamic stop that follows the price
 
-## Key Concepts
+## Step 5: Manage Your Position
 
-### How Index Perpetuals Differ
+Once filled, your position appears in the Hyperliquid positions panel. You can:
 
-Unlike single-asset perpetuals (BTC-USDC, ETH-USDC), Friction's index perpetuals track a basket of assets. This means:
+- Adjust leverage
+- Add or reduce size
+- Set stop-loss and take-profit
+- Close partially or fully
 
-- **Diversified exposure:** One position covers the entire market or sector
-- **Lower single-asset risk:** No exposure to individual token events
-- **Oracle-priced:** Friction's oracle determines the index price, not the order book
+## Trading Examples
 
-### Funding Rates
+### Going Long on TCAP
 
-Friction markets use Hyperliquid's standard 1-hour funding rate mechanism. Funding is exchanged between longs and shorts based on the difference between the mark price and the oracle price.
+You believe the total crypto market cap will increase from $3.5T to $4T.
 
-### Liquidation
+- **TCAP price now:** $350 (= $3.5T / 10B)
+- **TCAP price target:** $400 (= $4T / 10B)
+- **Action:** Long TCAP-USDC at $350
+- **If right:** +14.3% gain (× leverage)
 
-Liquidation works the same as any Hyperliquid perpetual — if your margin falls below the maintenance requirement, your position is liquidated by Hyperliquid's engine.
+### Shorting BTC.D
+
+You believe altcoin season is coming and Bitcoin dominance will drop from 56% to 50%.
+
+- **BTC.D price now:** $56
+- **BTC.D target:** $50
+- **Action:** Short BTC.D-USDC at $56
+- **If right:** +10.7% gain (× leverage)
+
+### Long MEME
+
+You believe the memecoin sector will grow from $10B to $20B total market cap.
+
+- **MEME price now:** $1.00 (= $10B / 10B)
+- **MEME target:** $2.00 (= $20B / 10B)
+- **Action:** Long MEME-USDC at $1.00
+- **If right:** +100% gain (× leverage)
+
+{% hint style="warning" %}
+These are illustrative examples only. Past performance does not indicate future results. Trading perpetual futures involves substantial risk of loss. See [Risk Disclosures](risks.md).
+{% endhint %}

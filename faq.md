@@ -1,101 +1,110 @@
-# Frequently Asked Questions
+# FAQ
 
 ## General
 
 ### What is Friction?
 
-Friction is a HIP-3 market provider on Hyperliquid that deploys crypto index perpetual contracts. We build the index methodology and oracle infrastructure — Hyperliquid handles all trading execution, settlement, and custody.
+Friction is a HIP-3 market provider on Hyperliquid. We build crypto index perpetuals — TCAP (total market cap), BTC.D (bitcoin dominance), and MEME (top memecoins). Friction calculates the index prices and publishes them to Hyperliquid via an oracle. Hyperliquid handles all trading, settlement, custody, and liquidations.
 
-### What markets does Friction offer?
+### Do I need a Friction account?
 
-Three markets under a single portfolio:
+No. You trade directly on [Hyperliquid](https://app.hyperliquid.xyz) with your existing wallet and USDC balance. No separate sign-up, deposit, or account required.
 
-- **TCAP-USDC** — Total crypto market cap index (live)
-- **BTC.D-USDC** — Bitcoin dominance index (coming soon)
-- **MEME-USDC** — Top 100 memecoin index (coming soon)
+### What wallet do I need?
 
-### Do I need a separate account?
-
-No. Friction markets trade directly on Hyperliquid. Use your existing Hyperliquid account and USDC balance.
+Any wallet supported by Hyperliquid: MetaMask, Rabby, WalletConnect, and others.
 
 ### What is HIP-3?
 
-HIP-3 is Hyperliquid's protocol for third-party perpetual contract deployment. It allows external teams to provide oracle prices while Hyperliquid handles all trading infrastructure. See the [Hyperliquid HIP-3 docs](https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals).
+HIP-3 (Hyperliquid Improvement Proposal #3) allows third parties to deploy custom perpetual markets on Hyperliquid by providing oracle prices. The deployer (Friction) stakes HYPE tokens and earns 50% of trading fees. Hyperliquid handles all infrastructure.
 
-## Index Questions
+## Markets
 
-### What is TCAP?
+### What markets does Friction offer?
 
-TCAP = Total Crypto Market Cap / 10 Billion. It tracks the entire crypto market in a single price. When crypto is $3.5 trillion, TCAP = $350.
+| Market | What It Tracks | Leverage |
+|--------|---------------|----------|
+| TCAP-USDC | Total crypto market cap / 10B | Up to 20x |
+| BTC.D-USDC | Bitcoin dominance % | Up to 20x |
+| MEME-USDC | Top 100 memecoins / 10B | Up to 10x |
 
-### Why not just trade BTC?
+### How is TCAP calculated?
 
-TCAP provides diversified crypto exposure. If you're bullish on crypto broadly but don't want to pick individual winners, TCAP lets you trade the whole market in one position.
+`TCAP = Total Crypto Market Cap / 10,000,000,000`. At a $3.5 trillion market cap, TCAP = $350. It uses the same divisor as Cryptex TCAP, so prices are directly comparable. See [TCAP Methodology](methodology/tcap-index.md).
 
-### What's included in TCAP?
+### How is BTC.D calculated?
 
-All cryptocurrencies including L1s, L2s, DeFi, memes, exchange tokens, and stablecoins. Wrapped tokens and liquid staking tokens are excluded to prevent double-counting. See the [full methodology](methodology/tcap-index.md).
+`BTC.D = (BTC Market Cap / Total Market Cap) × 100`. If Bitcoin dominance is 56%, BTC.D trades at $56. See [BTC.D Methodology](methodology/btc-dominance.md).
 
-### How is MEME different from buying individual memecoins?
+### How is MEME calculated?
 
-MEME tracks 50-100 memecoins with automatic rebalancing. It reduces single-token risk and captures the overall memecoin sector trend without picking winners.
+MEME is a market-cap-weighted index of the top 50–100 memecoins, divided by 10 billion. Tokens are capped at 15% weight individually and 50% for the top 5. Rebalanced daily. See [MEME Methodology](methodology/meme-index.md).
 
-### How often does MEME rebalance?
+### Why is MEME leverage limited to 10x?
 
-Daily at 00:00 UTC, plus emergency removals for rug events (80%+ liquidity drop in 1 hour).
+Memecoins are more volatile than the broad market. Lower max leverage reduces liquidation risk during large moves.
 
-## Trading Questions
+## Oracle
 
-### What leverage is available?
+### Where do prices come from?
 
-TCAP and BTC.D: up to 20x. MEME: up to 10x (reduced due to higher volatility). These are the maximum — you can use any leverage up to these limits.
+Multiple independent sources: CoinGecko, CoinMarketCap, Hyperliquid spot, Jupiter, Uniswap V3, Binance, and Coinbase. The oracle cross-validates and filters outliers before publishing. See [Data Sources](oracle/data-sources.md).
+
+### How often does the oracle update?
+
+Every 3 seconds for TCAP and BTC.D. Every 2.5 seconds for MEME.
+
+### What happens if a data source goes down?
+
+The oracle has a five-level failover system and never halts. If one source fails, it simulates the missing source using historical deviation data. If all sources fail, it falls back to cached pricing at reduced confidence. See [Reliability](oracle/reliability.md).
+
+### Can the oracle be manipulated?
+
+The hybrid CEX+DEX architecture makes manipulation extremely difficult. Deviation guards cap Hyperliquid's influence, outlier detection filters anomalous prices, and Hyperliquid's own 1% per-update clamp provides defense-in-depth. See [Architecture](oracle/architecture.md).
+
+## Fees
 
 ### What are the fees?
 
-Taker: 9 bps (0.09%), Maker: 3 bps (0.03%). Standard Hyperliquid fees with 2x HIP-3 multiplier. See [fee details](trading/fees.md).
+9 bps (0.09%) for takers, 3 bps (0.03%) for makers. This is 2x standard Hyperliquid fees because HIP-3 markets include oracle infrastructure costs. See [Fees](trading/fees.md).
 
-### How does funding work?
+### Why are fees higher than regular Hyperliquid markets?
 
-Standard Hyperliquid 1-hour funding rates. Funding is exchanged between longs and shorts based on the difference between mark price and oracle price.
+HIP-3 markets charge 2x the standard validator fee rate. The premium funds the oracle infrastructure, index methodology, and real-time data feeds that make index perpetuals possible.
 
-### Can I use limit orders?
+### What is growth mode?
 
-Yes. All Hyperliquid order types work: Market, Limit, Stop-Loss, Take-Profit, and Trailing Stop.
+Friction can activate a 90% fee reduction on select markets during launch phases, making them temporarily cheaper than standard Hyperliquid perps. This is rate-limited by Hyperliquid.
 
-### How are positions liquidated?
+## Stress Index
 
-Liquidation follows standard Hyperliquid rules. If your margin falls below maintenance requirements, Hyperliquid's engine liquidates your position.
+### What is the Stress Index?
 
-## Oracle Questions
+A real-time crypto market stress monitor on a scale of 18 to 100, combining four market health dimensions: fragility, pressure, structure, and funding. View it at [friction.market/index/tcap-stress](https://friction.market/index/tcap-stress).
 
-### Where does the price data come from?
+### Can I trade the Stress Index?
 
-Multiple independent, institutional-grade data sources. The oracle uses median filtering and cross-validation to prevent any single source from influencing the price. See [data sources](oracle/data-sources.md).
+No. The Stress Index is an informational feed only. It uses a custom funding mechanism that cannot be replicated on HIP-3. It provides trading context for TCAP traders and researchers.
 
-### How often is the oracle updated?
+### What do the stress levels mean?
 
-Real-time — new prices are published to Hyperliquid every few seconds.
+| Level | Range | Meaning |
+|-------|-------|---------|
+| Normal | 18–26 | Calm markets (~80% of the time) |
+| Elevated | 26–34 | Building tension (~18%) |
+| High | 34–42 | Active stress event (~1%) |
+| Extreme | 42–100 | Crisis conditions (~0.1%) |
 
-### What happens if the oracle fails?
+## Risk
 
-The oracle has a five-level failover system. It never halts — it degrades gracefully, publishing at reduced confidence with tighter bounds. See [reliability](oracle/reliability.md).
+### Can I lose more than my deposit?
 
-## Risk Questions
+On Hyperliquid, liquidation closes your position before your margin is fully depleted. You cannot lose more than the margin allocated to that position, but you can lose all of it.
 
-### Can I lose more than my margin?
+### Is my money safe?
 
-No. Hyperliquid perpetuals have isolated margin — your maximum loss is the margin allocated to each position. You cannot go into negative balance.
+Friction does not custody any funds. All deposits, positions, and withdrawals are handled by Hyperliquid. Friction only provides oracle prices.
 
-### Is there a risk of the oracle being manipulated?
+### What happens if Friction's oracle stops?
 
-The oracle uses multiple independent sources with median filtering, making single-source manipulation ineffective. See [oracle architecture](oracle/architecture.md).
-
-### What happens during extreme market events?
-
-The oracle is designed to perform under stress. It uses adaptive smoothing and may tighten price bounds during extreme volatility. Monitor the stress index for real-time conditions.
-
-## Support
-
-### How do I get help?
-
-Visit our support page to submit a ticket, chat with us on Crisp, or join our Discord community.
+The oracle is designed to never halt — it degrades gracefully through five failover levels. In the worst case, Hyperliquid's own mark price system takes over using the last published oracle price until service is restored.
