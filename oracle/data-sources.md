@@ -1,92 +1,48 @@
 # Data Sources
 
-Friction uses a hybrid CEX + DEX architecture. CEX aggregators provide broad market cap coverage; Hyperliquid spot prices provide real-time movement tracking. No single source can influence the final oracle price.
+Friction uses a hybrid CEX + DEX architecture. Institutional-grade aggregators provide broad market cap coverage; real-time spot prices from decentralized and centralized exchanges provide movement tracking. No single source can influence the final oracle price.
 
 ## TCAP Sources
 
 ### CEX Layer (Level Anchor)
 
-| Source | Endpoint | Coverage | Update Speed |
-|--------|----------|----------|-------------|
-| **CoinGecko** | `/api/v3/global` | 13,000+ coins | ~55s server-side cache |
-| **CoinMarketCap** | `/v1/global-metrics/quotes/latest` | 10,000+ coins | ~37s server-side cache |
+Multiple institutional-grade market data aggregators provide total crypto market cap covering 10,000–13,000+ assets. These form the "level" anchor for the TCAP price.
 
-These provide the total crypto market cap used to calculate the TCAP "level." Both are fetched on every oracle cycle and cross-validated.
+Both primary sources are fetched on every oracle cycle and cross-validated against each other. If they diverge beyond acceptable thresholds, monitoring alerts are triggered.
 
 ### DEX Layer (Movement Tracker)
 
-| Source | Endpoint | Coverage | Update Speed |
-|--------|----------|----------|-------------|
-| **Hyperliquid spot** | `allMids` API | 25 tracked pairs | Sub-second |
+Real-time spot prices from a diversified basket of major assets covering the majority of total crypto market cap. These provide tick-by-tick movement between CEX refreshes.
 
-Hyperliquid spot prices for 25 major assets (~85% of total market cap) provide tick-by-tick movement between CEX updates. The oracle calibrates a basket ratio against CEX data and uses it to estimate total market cap from HL prices.
-
-### HL Basket Composition
-
-Top 25 assets by market cap weight. The top 5 represent ~70%:
-
-| Rank | Asset | Approx. Weight |
-|------|-------|---------------|
-| 1 | BTC | ~38% |
-| 2 | ETH | ~14% |
-| 3 | XRP | ~5% |
-| 4 | BNB | ~4% |
-| 5 | SOL | ~4% |
-| 6-25 | DOGE, ADA, TRX, AVAX, LINK, TON, DOT, MATIC, SHIB, SUI, UNI, AAVE, ARB, OP, APT, NEAR, FIL, INJ, ATOM, SEI | ~20% combined |
+The oracle calibrates a basket ratio against CEX data and uses it to estimate total market cap from spot prices in real time.
 
 ## MEME Sources
 
 MEME uses a broader set of sources because memecoins trade across many venues:
 
-| Source | Role | Coverage |
-|--------|------|----------|
-| **Hyperliquid spot** | Primary | ~30 HL-listed memes |
-| **Jupiter** | Primary | All Solana memes |
-| **Uniswap V3** | Primary | Ethereum memes |
-| **Binance** | Validation | ~50 large-cap memes |
-| **Coinbase** | Validation | ~20 large-cap memes |
-| **CoinGecko** | Fallback | All tokens (reference pricing) |
+- **Hyperliquid spot** — listed memecoins
+- **Solana DEX aggregators** — all Solana memecoins
+- **Ethereum DEX** — Ethereum memecoins
+- **Major CEXs** — large-cap memecoins (validation)
+- **Market data aggregators** — reference pricing (fallback)
 
-Per-token prices are aggregated using a median filter with 5% outlier removal (wider than TCAP's 2% due to higher meme volatility).
+Per-token prices are aggregated using a median filter with outlier removal. MEME uses a wider outlier threshold than TCAP due to higher memecoin volatility.
 
 ## BTC.D Sources
 
-BTC.D reuses the TCAP data pipeline entirely — the oracle already has BTC market cap and total market cap from CoinGecko and CoinMarketCap. No additional API calls needed.
+BTC.D reuses the TCAP data pipeline entirely — the oracle already has BTC market cap and total market cap from its CEX sources. No additional API calls needed.
 
 ## Cross-Validation
 
-Every oracle update cross-validates sources:
+Every oracle update cross-validates sources with market-appropriate thresholds:
 
-| Check | TCAP Threshold | MEME Threshold |
-|-------|---------------|----------------|
-| Outlier detection | 2% from median | 5% from median |
-| Source agreement | 3+ sources required | 2+ sources required |
-| Confidence threshold | 70% agreement | 70% agreement |
-| Deviation warning | 1% from reference | 3% from reference |
-| Deviation critical | 2% — halt updates | 5% — halt updates |
+- **Outlier detection** — prices that deviate significantly from the median are filtered
+- **Multi-source agreement** — minimum source count required before publishing
+- **Confidence scoring** — deviation between sources reduces confidence proportionally
+- **Automated alerting** — escalating alerts when sources disagree beyond expected ranges
 
 ## Source Health Monitoring
 
-Each source is tracked with a health state machine:
+Each data source is tracked with a health state machine that transitions between healthy, degraded, and unhealthy states based on consecutive successes and failures. Metrics tracked per source include status, last success time, failure count, and average latency.
 
-```
-unknown → healthy (first success)
-healthy → degraded (1 failure)
-degraded → unhealthy (3 consecutive failures)
-unhealthy → healthy (2 consecutive successes)
-```
-
-Metrics tracked per source: status, last success time, consecutive failures, average latency.
-
-## Cost
-
-| Source | Monthly Cost |
-|--------|-------------|
-| CoinGecko (Analyst plan) | $129 |
-| CoinMarketCap (Startup plan) | $95 |
-| Hyperliquid spot API | Free |
-| Jupiter API | Free |
-| Uniswap V3 (The Graph) | Free* |
-| **Total** | **~$224/mo** |
-
-*The Graph requires an API key for production rate limits.
+Source health directly influences the oracle's confidence score and failover behavior.

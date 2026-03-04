@@ -1,13 +1,13 @@
-# Oracle
+# Oracle Infrastructure
 
-Friction operates a hybrid CEX+DEX oracle that calculates index prices and publishes them to Hyperliquid via the HIP-3 protocol every 3 seconds.
+How prices are sourced, validated, and published to Hyperliquid.
 
 {% hint style="success" %}
-**Core principle:** The oracle never halts. It degrades gracefully through five failover levels, always publishing at the best available confidence.
+**Core principle:** The oracle never halts. It degrades gracefully through multiple failover levels, always publishing at the best available confidence.
 {% endhint %}
 
 | Page | What You'll Learn |
 |------|-------------------|
-| [Architecture](architecture.md) | Pipeline design, confidence scoring, and deviation guards |
-| [Data Sources](data-sources.md) | CEX + DEX hybrid sourcing with cross-validation |
-| [Reliability](reliability.md) | Five-level failover cascade and recovery mechanisms |
+| [Architecture](architecture.md) | Hybrid pipeline design, validation, and deviation guards |
+| [Data Sources](data-sources.md) | Multi-source CEX + DEX architecture with cross-validation |
+| [Reliability](reliability.md) | Multi-level failover and recovery mechanisms |
