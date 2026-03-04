@@ -13,5 +13,6 @@
   * [Reliability](oracle/reliability.md)
 * [Trading](trading/README.md)
   * [Getting Started](trading/getting-started.md)
+  * [Market Specifications](trading/specifications.md)
   * [Fees](trading/fees.md)
   * [Risk Disclosures](trading/risks.md)

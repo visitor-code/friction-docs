@@ -75,6 +75,29 @@ Every 3 seconds, the oracle calls Hyperliquid's `setOracle` with:
 
 All markets are batched into a single `setOracle` call.
 
+## Verify the Oracle Yourself
+
+It is important that market participants can independently replicate and verify oracle prices. Here's how:
+
+### TCAP
+
+1. Fetch total crypto market cap from [CoinGecko](https://api.coingecko.com/api/v3/global) — look for `total_market_cap.usd`
+2. Divide by 10,000,000,000
+3. Compare to the published TCAP oracle price
+
+### BTC.D
+
+1. From the same CoinGecko endpoint, get `market_cap_percentage.btc`
+2. That percentage is the BTC.D price (e.g., 56.5% → $56.50)
+
+### MEME
+
+MEME requires fetching individual token prices and applying weights. The full composition and weights are published daily. Contact Friction for the current composition snapshot.
+
+{% hint style="info" %}
+Expect ~1-3% deviation between your calculation and the published oracle price due to source timing differences and the hybrid blend. Deviations beyond 3% are investigated automatically.
+{% endhint %}
+
 ## Sanity Checks
 
 | Check | Threshold | Action |

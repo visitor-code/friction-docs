@@ -48,7 +48,11 @@ The oracle publishes prices every 3 seconds but carries inherent risks:
 
 - **Hyperliquid risk:** All trading occurs on Hyperliquid. Friction does not custody funds. Hyperliquid downtime, bugs, or exploits affect all Friction markets.
 - **Smart contract risk:** Hyperliquid's settlement and custody contracts may contain undiscovered vulnerabilities.
-- **HIP-3 risk:** As a HIP-3 deployer, Friction's 500K HYPE stake can be slashed by Hyperliquid governance for oracle misbehavior. A slashing event could disrupt market operations.
+- **HIP-3 slashing risk:** As a HIP-3 deployer, Friction stakes 500K HYPE (~$15M) which can be slashed by Hyperliquid governance:
+  - **Up to 100%** for invalid state transitions or prolonged downtime
+  - **Up to 50%** for brief downtime from irregular inputs
+  - **Up to 20%** for performance degradation
+  - Slashing does not distinguish between malicious intent and operator error — both are penalized equally. A slashing event could disrupt market operations.
 
 ## Market Risk
 

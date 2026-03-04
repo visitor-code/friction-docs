@@ -53,8 +53,9 @@ Everything you need to start trading Friction index perpetuals.
 | Page | What You'll Learn |
 |------|-------------------|
 | [Getting Started](trading/getting-started.md) | Connect your wallet, fund your account, place your first trade. |
-| [Fees](trading/fees.md) | Fee structure: 9 bps taker, 3 bps maker, with growth mode discounts. |
-| [Risk Disclosures](trading/risks.md) | Leverage, liquidation, oracle, and platform risks. |
+| [Market Specifications](trading/specifications.md) | All contract parameters, fee tiers, and price bounds in one table. |
+| [Fees](trading/fees.md) | Fee structure, volume discounts, and staking benefits. |
+| [Risk Disclosures](trading/risks.md) | Leverage, liquidation, oracle, slashing, and platform risks. |
 
 ---
 
