@@ -1,6 +1,6 @@
 # Fees
 
-Friction does not charge any fees beyond the standard HIP-3 fee structure set by Hyperliquid. All HIP-3 markets — whether from Friction, trade.xyz, or any other deployer — use the same 2x fee multiplier. This structure funds the oracle infrastructure that makes custom perpetual markets possible.
+Friction markets use Hyperliquid's HIP-3 fee structure. Fees are slightly higher than standard Hyperliquid markets because they include the cost of oracle infrastructure and index methodology.
 
 ## Trading Fees
 
@@ -13,12 +13,8 @@ Friction does not charge any fees beyond the standard HIP-3 fee structure set by
 Blended rate assumes a typical 60/40 taker/maker mix: (9 × 0.60) + (3 × 0.40) = 6.6 bps.
 
 {% hint style="info" %}
-**Why 2x?** All HIP-3 markets charge 2x the standard Hyperliquid fee (standard: 4.5 bps taker / 1.5 bps maker). This is a Hyperliquid platform rule, not a Friction surcharge. 50% of fees go to the oracle provider (Friction), 50% to Hyperliquid validators.
+HIP-3 markets charge **2x standard Hyperliquid fees** (standard: 4.5 bps taker / 1.5 bps maker). The premium funds the oracle infrastructure that makes index perpetuals possible.
 {% endhint %}
-
-## Volume Discounts
-
-Your existing Hyperliquid volume tiers and HYPE staking discounts apply to Friction markets automatically — the same as any other Hyperliquid market. Check your fee tier on the [Hyperliquid app](https://app.hyperliquid.xyz).
 
 ## Fee Distribution
 
@@ -38,11 +34,16 @@ Your existing Hyperliquid volume tiers and HYPE staking discounts apply to Frict
 
 ## Growth Mode
 
-Hyperliquid offers a **growth mode** that reduces fees by up to 90% on eligible markets. Growth mode availability depends on Hyperliquid's eligibility criteria and is rate-limited per deployer.
+Friction may activate Hyperliquid's **growth mode** on select markets during early launch phases. Growth mode reduces fees by up to 90%, making Friction markets temporarily cheaper than standard Hyperliquid perps.
 
-{% hint style="warning" %}
-Crypto index products (including TCAP, BTC.D, and MEME) may not be eligible for growth mode under Hyperliquid's current rules. We will update this page if growth mode becomes available for Friction markets.
-{% endhint %}
+When active, fees drop to approximately:
+
+| Fee Type | Growth Mode Rate |
+|----------|-----------------|
+| Taker | ~0.9 bps |
+| Maker | ~0.3 bps |
+
+Growth mode availability is rate-limited by Hyperliquid and will be announced when active.
 
 ## No Hidden Fees
 

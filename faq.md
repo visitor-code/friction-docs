@@ -70,15 +70,11 @@ The hybrid CEX+DEX architecture makes manipulation extremely difficult. Deviatio
 
 ### Why are fees higher than regular Hyperliquid markets?
 
-All HIP-3 markets — from any deployer — charge 2x the standard Hyperliquid fee rate. This is a Hyperliquid platform rule, not a Friction surcharge. The structure funds oracle infrastructure and index methodology. Friction does not charge any fees beyond the standard HIP-3 rates.
-
-### Do volume tiers and staking discounts apply?
-
-Yes. Your existing Hyperliquid volume tiers and HYPE staking discounts apply to Friction markets just like any other Hyperliquid market. See [Fees](trading/fees.md) for details.
+HIP-3 markets charge 2x the standard validator fee rate. The premium funds the oracle infrastructure, index methodology, and real-time data feeds that make index perpetuals possible.
 
 ### What is growth mode?
 
-Hyperliquid's growth mode reduces fees by up to 90% on eligible markets. However, crypto index products may not be eligible under current Hyperliquid rules. We will announce if growth mode becomes available for Friction markets.
+Friction can activate a 90% fee reduction on select markets during launch phases, making them temporarily cheaper than standard Hyperliquid perps. This is rate-limited by Hyperliquid.
 
 ## Stress Index
 
