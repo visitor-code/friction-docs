@@ -3,7 +3,7 @@
 The oracle is engineered for maximum uptime. A multi-level failover system ensures continuous price publishing even when individual data sources go down.
 
 {% hint style="success" %}
-**The oracle never halts.** Even in worst-case scenarios (all sources down), the oracle continues publishing at a minimum confidence floor. Degraded data is better than no data for orderly market function.
+**Continuous price delivery.** Redundant data sources and multi-level failover ensure uninterrupted oracle publishing. The system is designed so that source failures are handled automatically without affecting price quality.
 {% endhint %}
 
 ## Why Uptime Matters
@@ -36,7 +36,7 @@ When primary aggregator sources are unavailable, the oracle estimates prices fro
 
 ### Cached Fallback (L3–L4)
 
-If all live data is unavailable, the oracle publishes the last known price at minimum confidence. Critical alerts fire immediately. This is the never-halt guarantee.
+If all live data is unavailable, the oracle publishes the last known price at minimum confidence while critical alerts fire immediately. In practice, the redundancy of sources makes this scenario extremely unlikely.
 
 ## Recovery
 

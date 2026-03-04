@@ -4,15 +4,13 @@ Friction's oracle fetches prices from multiple independent sources, validates an
 
 ## Design Principles
 
-Five rules govern all oracle code:
-
-| # | Rule | Meaning |
-|---|------|---------|
-| 1 | **Never halt** | Always publish, even at degraded confidence |
-| 2 | **Never jump** | Price changes must be smooth — graceful degradation, not abrupt switching |
-| 3 | **Never trust** | Validate all inputs, bound all outputs, cross-validate across sources |
-| 4 | **Always log** | Every pricing decision logged with full context for audit |
-| 5 | **Always test** | Extended simulation required before any production deploy |
+| Principle | What It Means |
+|-----------|--------------|
+| **Continuous publishing** | Redundant sources and failover ensure uninterrupted price delivery |
+| **Smooth pricing** | Graceful transitions between sources — no sudden jumps or discontinuities |
+| **Zero trust** | Every input is validated, every output is bounded, sources are cross-checked |
+| **Full auditability** | Every pricing decision is logged with complete context |
+| **Simulation-first** | All changes are validated against extended historical simulations before production |
 
 ## Pipeline
 

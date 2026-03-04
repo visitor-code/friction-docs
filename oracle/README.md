@@ -3,7 +3,7 @@
 How prices are sourced, validated, and published to Hyperliquid.
 
 {% hint style="success" %}
-**Core principle:** The oracle never halts. It degrades gracefully through multiple failover levels, always publishing at the best available confidence.
+**Core principle:** Redundant sources and multi-level failover ensure continuous, high-quality price delivery.
 {% endhint %}
 
 | Page | What You'll Learn |
