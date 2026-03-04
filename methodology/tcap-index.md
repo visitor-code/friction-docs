@@ -46,25 +46,9 @@ Only tokens that would cause double-counting:
 
 ## Data Sources
 
-| Source | Coverage | Role |
-|--------|----------|------|
-| **CoinGecko** | 13,000+ assets | Primary global market cap |
-| **CoinMarketCap** | 10,000+ assets | Cross-validation |
+TCAP uses multiple institutional-grade market data aggregators covering 10,000–13,000+ assets. Sources are cross-validated against each other, with outlier detection and automated alerting when they diverge.
 
-Both provide total market cap via their global endpoints. The oracle takes the median when both are available and falls back to single-source if one goes down.
-
-### Source Agreement
-
-| CG/CMC Deviation | Confidence | Action |
-|-----------------|------------|--------|
-| < 2% | 95% | Normal operation |
-| 2–4% | 85% | Elevated monitoring |
-| 4–6% | 70% | Reduced confidence |
-| > 6% | 60% | Critical alert triggered |
-
-{% hint style="info" %}
-CoinGecko tracks ~10,000 tokens and CoinMarketCap ~13,000. A structural deviation of ~3% between sources is normal and expected.
-{% endhint %}
+See [Oracle Architecture](../oracle/architecture.md) and [Data Sources](../oracle/data-sources.md) for details.
 
 ## Oracle Updates
 
@@ -72,8 +56,7 @@ CoinGecko tracks ~10,000 tokens and CoinMarketCap ~13,000. A structural deviatio
 |-----------|-------|
 | Update interval | Every 3 seconds |
 | HIP-3 minimum | 2.5 seconds |
-| Max price change per update | 0.5% (self-imposed) |
-| Staleness warning | 5 minutes |
+| Max price change per update | 1% (self-imposed) |
 | Max daily range | 10x (HIP-3 enforced) |
 
 ## Comparison to Cryptex TCAP
