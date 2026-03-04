@@ -22,30 +22,11 @@ Consolidated parameters for all Friction index perpetuals on Hyperliquid.
 | **Min sources** | 3 | 2 | 2 |
 | **Rebalancing** | N/A (all assets) | N/A (fixed formula) | Daily 00:00 UTC |
 
-## Fee Tiers
+## Fees
 
-Friction markets use the standard HIP-3 fee structure. Friction does not charge any additional fees beyond those set by Hyperliquid — all HIP-3 markets from any deployer use the same 2x fee multiplier.
+Friction markets use the standard HIP-3 fee structure (9 bps taker / 3 bps maker). Friction does not charge any additional fees beyond those set by Hyperliquid — all HIP-3 markets from any deployer use the same 2x fee multiplier.
 
-Base fees decrease with trading volume and HYPE staking:
-
-### Volume Tiers
-
-| Tier | 14-Day Volume | Taker | Maker |
-|------|--------------|-------|-------|
-| Bronze | < $1M | 9.0 bps | 3.0 bps |
-| Silver | $1M – $5M | 8.1 bps | 2.7 bps |
-| Gold | $5M – $25M | 7.2 bps | 2.4 bps |
-| Platinum | $25M – $100M | 6.3 bps | 2.1 bps |
-| Diamond | $100M – $250M | 5.4 bps | 1.5 bps |
-| VIP | $250M+ | 4.5 bps | 0.9 bps |
-
-{% hint style="info" %}
-Volume tiers are based on your total 14-day Hyperliquid trading volume across ALL markets, not just Friction markets.
-{% endhint %}
-
-### HYPE Staking Discounts
-
-Staking HYPE provides an additional fee discount on top of volume tiers. Discounts range from 5% to 40% depending on the amount staked. Check Hyperliquid's staking page for current tier thresholds.
+Your existing Hyperliquid volume tiers and HYPE staking discounts apply automatically. See [Fees](fees.md) for details.
 
 ## Oracle Sources by Market
 

@@ -18,18 +18,7 @@ Blended rate assumes a typical 60/40 taker/maker mix: (9 × 0.60) + (3 × 0.40) 
 
 ## Volume Discounts
 
-Base fees decrease with your 14-day Hyperliquid trading volume (across ALL markets):
-
-| Tier | 14-Day Volume | Taker | Maker |
-|------|--------------|-------|-------|
-| Bronze | < $1M | 9.0 bps | 3.0 bps |
-| Silver | $1M+ | 8.1 bps | 2.7 bps |
-| Gold | $5M+ | 7.2 bps | 2.4 bps |
-| Platinum | $25M+ | 6.3 bps | 2.1 bps |
-| Diamond | $100M+ | 5.4 bps | 1.5 bps |
-| VIP | $250M+ | 4.5 bps | 0.9 bps |
-
-HYPE staking provides an additional 5–40% discount on top of volume tiers.
+Your existing Hyperliquid volume tiers and HYPE staking discounts apply to Friction markets automatically — the same as any other Hyperliquid market. Check your fee tier on the [Hyperliquid app](https://app.hyperliquid.xyz).
 
 ## Fee Distribution
 

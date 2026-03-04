@@ -74,7 +74,7 @@ All HIP-3 markets — from any deployer — charge 2x the standard Hyperliquid f
 
 ### Do volume tiers and staking discounts apply?
 
-Yes. Your 14-day Hyperliquid volume tiers and HYPE staking discounts apply to Friction markets just like any other Hyperliquid market. At the highest tiers, effective fees can drop to ~4.5 bps taker / ~0.9 bps maker. See [Fees](trading/fees.md) for the full tier table.
+Yes. Your existing Hyperliquid volume tiers and HYPE staking discounts apply to Friction markets just like any other Hyperliquid market. See [Fees](trading/fees.md) for details.
 
 ### What is growth mode?
 
