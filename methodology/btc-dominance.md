@@ -36,20 +36,9 @@ Bitcoin dominance is one of the most-watched metrics in crypto. It captures a fu
 
 ## Data Sources
 
-BTC.D reuses the same infrastructure as TCAP — no additional data sources required.
+BTC.D reuses the same infrastructure as TCAP — no additional data sources required. The oracle already has BTC market cap and total market cap from its existing data pipeline, so BTC.D is computed as a simple ratio with zero extra API calls.
 
-| Source | Data Used |
-|--------|-----------|
-| **CoinGecko** | BTC market cap + total market cap |
-| **CoinMarketCap** | BTC market cap + total market cap |
-
-The oracle takes the median BTC market cap and median total market cap from available sources, then divides:
-
-```
-medianBtcMcap = median(CG_btcMcap, CMC_btcMcap)
-medianTotalMcap = median(CG_totalMcap, CMC_totalMcap)
-BTC.D = (medianBtcMcap / medianTotalMcap) × 100
-```
+See [Oracle Data Sources](../oracle/data-sources.md) for details.
 
 ## Market Specifications
 

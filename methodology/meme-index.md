@@ -27,7 +27,7 @@ The same 10 billion divisor used across all Friction indices. Sub-dollar pricing
 | Market cap | $10M+ to enter, $8M to exit |
 | Liquidity | $500K+ to enter, $400K to exit |
 | Age | 7+ days since creation |
-| Classification | Listed in CoinGecko `meme-token` category or CoinMarketCap `memes` tag |
+| Classification | Listed in major aggregator memecoin categories |
 
 {% hint style="info" %}
 **Hysteresis prevents churn.** Entry thresholds are 25% higher than exit thresholds so tokens don't constantly flip in and out of the index.
@@ -69,7 +69,7 @@ Weights are based on market cap with caps to prevent concentration:
 
 ### Daily (00:00 UTC)
 
-1. Fetch all qualifying tokens from CoinGecko and CoinMarketCap
+1. Fetch all qualifying tokens from market data aggregators
 2. Apply inclusion criteria (new tokens must meet entry thresholds)
 3. Calculate and cap weights
 4. Update composition
@@ -86,24 +86,19 @@ If a token's liquidity drops more than 80% within 1 hour:
 
 ## Data Sources
 
-| Source | Weight | Role |
-|--------|--------|------|
-| **Hyperliquid spot** | Primary | HL-listed meme prices |
-| **Jupiter** | Primary | Solana DEX aggregator |
-| **Uniswap V3** | Primary | Ethereum DEX |
-| **Binance** | Validation | CEX cross-check |
-| **Coinbase** | Validation | CEX cross-check |
-| **CoinGecko** | Fallback | Reference pricing |
+MEME uses a broad set of sources across CEX and DEX venues because memecoins trade on many platforms:
+
+- **DEX aggregators** — Solana, Ethereum, and other chain DEXs (primary pricing)
+- **Hyperliquid spot** — HL-listed memecoins
+- **Major centralized exchanges** — cross-validation
+- **Market data aggregators** — fallback reference pricing
 
 Per-token price aggregation:
 - Collect prices from all available sources
-- Apply median filter
-- Remove outliers (> 5% from median — wider than TCAP's 2% due to meme volatility)
+- Apply median filter with outlier removal (wider threshold than TCAP due to meme volatility)
 - Weighted average of remaining sources
 
-### Cold Start Fallback
-
-If all APIs and caches are unavailable, the oracle falls back to 10 hardcoded top memecoins (DOGE, SHIB, PEPE, WIF, BONK, FLOKI, BRETT, POPCAT, MEW, NEIRO) and fetches live prices from exchanges. This is an emergency measure at very low confidence (30%).
+See [Oracle Data Sources](../oracle/data-sources.md) for details on the multi-source architecture.
 
 ## Market Specifications
 
@@ -115,5 +110,5 @@ If all APIs and caches are unavailable, the oracle falls back to 10 hardcoded to
 | Funding | Standard Hyperliquid (1-hour) |
 | Oracle update | Every 2.5 seconds |
 | Outlier threshold | 5% (vs 2% for TCAP) |
-| Max price change per update | 2% (vs 0.5% for TCAP) |
+| Max price change per update | 2% (vs 1% for TCAP) |
 | Collateral | USDC |

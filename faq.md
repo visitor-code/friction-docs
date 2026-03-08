@@ -48,7 +48,7 @@ Memecoins are more volatile than the broad market. Lower max leverage reduces li
 
 ### Where do prices come from?
 
-Multiple independent sources: CoinGecko, CoinMarketCap, Hyperliquid spot, Jupiter, Uniswap V3, Binance, and Coinbase. The oracle cross-validates and filters outliers before publishing. See [Data Sources](oracle/data-sources.md).
+Multiple independent sources across both centralized aggregators and decentralized exchanges. The oracle cross-validates all sources and filters outliers before publishing. See [Data Sources](oracle/data-sources.md).
 
 ### How often does the oracle update?
 
@@ -56,7 +56,7 @@ Every 3 seconds for TCAP and BTC.D. Every 2.5 seconds for MEME.
 
 ### What happens if a data source goes down?
 
-The oracle has a five-level failover system and never halts. If one source fails, it simulates the missing source using historical deviation data. If all sources fail, it falls back to cached pricing at reduced confidence. See [Reliability](oracle/reliability.md).
+The oracle has a multi-level failover system that ensures continuous price delivery. If one source fails, the oracle maintains price continuity automatically. Redundant sources make complete outages extremely unlikely. See [Reliability](oracle/reliability.md).
 
 ### Can the oracle be manipulated?
 
@@ -107,4 +107,4 @@ Friction does not custody any funds. All deposits, positions, and withdrawals ar
 
 ### What happens if Friction's oracle stops?
 
-The oracle is designed to never halt — it degrades gracefully through five failover levels. In the worst case, Hyperliquid's own mark price system takes over using the last published oracle price until service is restored.
+The oracle has a multi-level failover system designed for continuous price delivery. Redundant data sources make complete outages extremely unlikely. In the worst case, Hyperliquid's own mark price system takes over using the last published oracle price until service is restored.

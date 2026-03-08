@@ -12,13 +12,13 @@ Friction is a **HIP-3 market provider** on Hyperliquid. We build index methodolo
 |--------|---------------|----------|--------|
 | **TCAP-USDC** | Total crypto market cap ($3.5T → $350 TCAP) | Up to 20x | Launching |
 | **BTC.D-USDC** | Bitcoin dominance (56% → $56 BTC.D) | Up to 20x | Coming soon |
-| **MEME-USDC** | Top 100 memecoins by market cap | Up to 10x | Coming soon |
+| **MEME-USDC** | Top 50–100 memecoins by market cap | Up to 10x | Coming soon |
 
 No separate account needed — trade directly on [Hyperliquid](https://app.hyperliquid.xyz) with your existing wallet and USDC balance. All standard order types work: Market, Limit, Stop-Loss, Take-Profit, and Trailing Stop.
 
 ## How It Works
 
-1. **Friction calculates index prices** from multiple data sources (CoinGecko, CoinMarketCap, Hyperliquid spot, Jupiter, Uniswap)
+1. **Friction calculates index prices** from multiple independent data sources (CEX aggregators, DEX spot prices, real-time feeds)
 2. **Friction publishes prices** to Hyperliquid every 3 seconds via the HIP-3 oracle API
 3. **Hyperliquid handles everything else** — matching, positions, liquidations, funding, custody
 4. **You trade** index perpetuals like any other Hyperliquid market
@@ -43,8 +43,8 @@ How prices are sourced, validated, and published to Hyperliquid.
 | Page | What You'll Learn |
 |------|-------------------|
 | [Architecture](oracle/architecture.md) | Hybrid CEX+DEX pipeline with confidence scoring and deviation guards. |
-| [Data Sources](oracle/data-sources.md) | Five data sources with cross-validation and outlier detection. |
-| [Reliability](oracle/reliability.md) | Five-level failover — the oracle never halts. |
+| [Data Sources](oracle/data-sources.md) | Multi-source architecture with cross-validation and outlier detection. |
+| [Reliability](oracle/reliability.md) | Multi-level failover for continuous price delivery. |
 
 ### [Trading](trading/README.md)
 
@@ -53,9 +53,9 @@ Everything you need to start trading Friction index perpetuals.
 | Page | What You'll Learn |
 |------|-------------------|
 | [Getting Started](trading/getting-started.md) | Connect your wallet, fund your account, place your first trade. |
-| [Market Specifications](trading/specifications.md) | All contract parameters, fee tiers, and price bounds in one table. |
-| [Fees](trading/fees.md) | Fee structure, volume discounts, and staking benefits. |
-| [Risk Disclosures](trading/risks.md) | Leverage, liquidation, oracle, slashing, and platform risks. |
+| [Market Specifications](trading/specifications.md) | All contract parameters in one table. |
+| [Fees](trading/fees.md) | Fee structure: 9 bps taker, 3 bps maker. |
+| [Risk Disclosures](trading/risks.md) | Leverage, liquidation, oracle, and platform risks. |
 
 ---
 
